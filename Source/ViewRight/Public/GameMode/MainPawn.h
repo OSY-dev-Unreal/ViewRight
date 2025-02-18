@@ -22,6 +22,7 @@ protected:
 	//Camera movement and rotation
 	void Move(const FInputActionValue& Value);
 	void Rotation(const FInputActionValue& Value);
+	void ArmLength(const FInputActionValue& Value);
 
 
 public:	
@@ -58,5 +59,13 @@ public:
 	//Rotation
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 	class UInputAction* RotationAction;
+	//ArmLength
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	class UInputAction* LengthAction;
+
+
+	//Change in length of the spring arm
+	UPROPERTY()
+	float NewArmLength;
 	
 };

@@ -9,6 +9,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "GameMode/MainGameMode.h"
 #include "GameMode/MainPlayerController.h"
+#include "Kismet/KismetMathLibrary.h"
 
 // Sets default values
 AMainPawn::AMainPawn()
@@ -45,6 +46,8 @@ void AMainPawn::BeginPlay()
 {
 	Super::BeginPlay();
 	SpringArmComponent->SetRelativeRotation(FRotator(-45.0f,0.0f,0.0f));
+
+	NewArmLength = SpringArmComponent->TargetArmLength;
 }
 
 
@@ -53,6 +56,8 @@ void AMainPawn::BeginPlay()
 void AMainPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	SpringArmComponent->TargetArmLength = UKismetMathLibrary::FInterpTo(SpringArmComponent->TargetArmLength,NewArmLength,DeltaTime,3.0f);
+	
 
 }
 
@@ -73,7 +78,8 @@ void AMainPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	if (EnhancedInputComponent && MoveAction && RotationAction)
 	{
 		EnhancedInputComponent->BindAction(MoveAction,ETriggerEvent::Triggered,this,&AMainPawn::Move);
-		EnhancedInputComponent->BindAction(MoveAction,ETriggerEvent::Triggered,this,&AMainPawn::Rotation);
+		EnhancedInputComponent->BindAction(RotationAction,ETriggerEvent::Triggered,this,&AMainPawn::Rotation);
+		EnhancedInputComponent->BindAction(LengthAction,ETriggerEvent::Triggered,this,&AMainPawn::ArmLength);
 	}
 
 }
@@ -84,12 +90,24 @@ void AMainPawn::Move(const FInputActionValue& Value)
 	
 	if (Controller)
 	{
-		AddMovementInput(GetActorForwardVector(),MovementVector.Y*10.0f);
-		AddMovementInput(GetActorRightVector(),MovementVector.X*10.0f*-1.0f);
+		AddMovementInput(UKismetMathLibrary::GetRightVector(FRotator(0.0f,GetControlRotation().Yaw,GetControlRotation().Roll)),MovementVector.X*100.0f);
+		AddMovementInput(UKismetMathLibrary::GetForwardVector(FRotator(0.0f,GetControlRotation().Yaw,0.0f)),MovementVector.Y*100.0f);
 	}
 }
 
 void AMainPawn::Rotation(const FInputActionValue& Value)
 {
-	
+	FVector2D RotationVector = Value.Get<FVector2D>();
+	if (Controller)
+	{
+		
+		AddControllerYawInput(RotationVector.X);
+		AddControllerPitchInput(RotationVector.Y);
+	}
+}
+
+void AMainPawn::ArmLength(const FInputActionValue& Value)
+{
+	float LengthValue = Value.Get<float>();
+	NewArmLength = UKismetMathLibrary::FClamp(SpringArmComponent->TargetArmLength+LengthValue*200.0f,50.0f,2500.0f);
 }
