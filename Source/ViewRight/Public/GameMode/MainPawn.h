@@ -67,5 +67,11 @@ public:
 	//Change in length of the spring arm
 	UPROPERTY()
 	float NewArmLength;
+
+	UPROPERTY(EditAnywhere)
+	float MoveSpeed_X;
+
+	UPROPERTY(EditAnywhere)
+	float MoveSpeed_Y;
 	
 };

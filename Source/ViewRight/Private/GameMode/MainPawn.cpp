@@ -38,7 +38,8 @@ AMainPawn::AMainPawn()
 	// Camera Does not Rotate Relative to Arm
 	CameraComponent->bUsePawnControlRotation = false;
 	
-	
+	MoveSpeed_X = 1000.0f;
+	MoveSpeed_Y = 1000.0f;
 }
 
 // Called when the game starts or when spawned
@@ -87,11 +88,19 @@ void AMainPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 void AMainPawn::Move(const FInputActionValue& Value)
 {
 	FVector2D MovementVector = Value.Get<FVector2D>();
+	if(MovementVector.X>0)
+	{
+		MoveSpeed_X = UKismetMathLibrary::Abs(MoveSpeed_X);
+	}
+	else if(MovementVector.X<0)
+	{
+		MoveSpeed_X = UKismetMathLibrary::Abs(MoveSpeed_X)*(-1.0f);
+	}
 	
 	if (Controller)
 	{
-		AddMovementInput(UKismetMathLibrary::GetRightVector(FRotator(0.0f,GetControlRotation().Yaw,GetControlRotation().Roll)),MovementVector.X*100.0f);
-		AddMovementInput(UKismetMathLibrary::GetForwardVector(FRotator(0.0f,GetControlRotation().Yaw,0.0f)),MovementVector.Y*100.0f);
+		AddMovementInput(UKismetMathLibrary::GetRightVector(FRotator(0.0f,GetControlRotation().Yaw,GetControlRotation().Roll)),MoveSpeed_X);
+		AddMovementInput(UKismetMathLibrary::GetForwardVector(FRotator(0.0f,GetControlRotation().Yaw,0.0f)),MovementVector.Y*MoveSpeed_Y);
 	}
 }
 
