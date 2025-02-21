@@ -88,18 +88,10 @@ void AMainPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 void AMainPawn::Move(const FInputActionValue& Value)
 {
 	FVector2D MovementVector = Value.Get<FVector2D>();
-	if(MovementVector.X>0)
-	{
-		MoveSpeed_X = UKismetMathLibrary::Abs(MoveSpeed_X);
-	}
-	else if(MovementVector.X<0)
-	{
-		MoveSpeed_X = UKismetMathLibrary::Abs(MoveSpeed_X)*(-1.0f);
-	}
 	
 	if (Controller)
 	{
-		AddMovementInput(UKismetMathLibrary::GetRightVector(FRotator(0.0f,GetControlRotation().Yaw,GetControlRotation().Roll)),MoveSpeed_X);
+		AddMovementInput(UKismetMathLibrary::GetRightVector(FRotator(0.0f,GetControlRotation().Yaw,GetControlRotation().Roll)),MovementVector.X*MoveSpeed_X);
 		AddMovementInput(UKismetMathLibrary::GetForwardVector(FRotator(0.0f,GetControlRotation().Yaw,0.0f)),MovementVector.Y*MoveSpeed_Y);
 	}
 }
@@ -118,5 +110,6 @@ void AMainPawn::Rotation(const FInputActionValue& Value)
 void AMainPawn::ArmLength(const FInputActionValue& Value)
 {
 	float LengthValue = Value.Get<float>();
-	NewArmLength = UKismetMathLibrary::FClamp(SpringArmComponent->TargetArmLength+LengthValue*200.0f,50.0f,2500.0f);
+	NewArmLength = UKismetMathLibrary::FClamp(SpringArmComponent->TargetArmLength+LengthValue*500.0f,50.0f,10000.0f);
+	
 }
