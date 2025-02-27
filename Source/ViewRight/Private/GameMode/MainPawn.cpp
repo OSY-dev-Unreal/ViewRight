@@ -24,7 +24,7 @@ AMainPawn::AMainPawn()
 	//Attached to the root component
 	SpringArmComponent->SetupAttachment(ArrowComponent);
 	//Set length
-	SpringArmComponent->TargetArmLength = 1500.0f;
+	SpringArmComponent->TargetArmLength = 15000.0f;
 	// Rotate the arm based on the controller
 	
 	//Cancel camera collision
@@ -110,6 +110,6 @@ void AMainPawn::Rotation(const FInputActionValue& Value)
 void AMainPawn::ArmLength(const FInputActionValue& Value)
 {
 	float LengthValue = Value.Get<float>();
-	NewArmLength = UKismetMathLibrary::FClamp(SpringArmComponent->TargetArmLength+LengthValue*500.0f,50.0f,10000.0f);
+	NewArmLength = UKismetMathLibrary::FClamp(SpringArmComponent->TargetArmLength+LengthValue*500.0f,50.0f,100000.0f);
 	
 }
