@@ -21,6 +21,11 @@
 			"TargetAllowList": [
 				"Editor"
 			]
+		},
+		{
+			"Name": "SimpleCharts",
+			"Enabled": true,
+			"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/content/0ed62f4ea24a4897ae2920fe45ec11df"
 		}
 	]
 }
